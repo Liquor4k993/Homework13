@@ -1,0 +1,45 @@
+package me.liquor4k.org.skypro.skyshop.product;
+
+/**
+ * Класс, представляющий обычный товар без скидок и специальных условий.
+ */
+public class SimpleProduct extends Product {
+    private final int price;
+
+    /**
+     * Конструктор обычного товара
+     * @param name название товара
+     * @param price цена товара в рублях
+     */
+    public SimpleProduct(String name, int price) {
+        super(name);
+        this.price = price;
+    }
+
+    /**
+     * Получить цену товара
+     * @return цена товара
+     */
+    @Override
+    public int getPrice() {
+        return price;
+    }
+
+    /**
+     * Проверяет, является ли товар специальным
+     * @return false - обычный товар не является специальным
+     */
+    @Override
+    public boolean isSpecial() {
+        return false;
+    }
+
+    /**
+     * Возвращает строковое представление товара
+     * @return строка в формате "название: цена"
+     */
+    @Override
+    public String toString() {
+        return getName() + ": " + getPrice();
+    }
+}

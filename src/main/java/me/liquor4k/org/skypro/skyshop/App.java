@@ -1,77 +1,89 @@
 package me.liquor4k.org.skypro.skyshop;
 
+import me.liquor4k.org.skypro.skyshop.product.DiscountedProduct;
+import me.liquor4k.org.skypro.skyshop.product.FixPriceProduct;
 import me.liquor4k.org.skypro.skyshop.product.Product;
 import me.liquor4k.org.skypro.skyshop.basket.ProductBasket;
+import me.liquor4k.org.skypro.skyshop.product.SimpleProduct;
 
 public class App {
     public static void main(String[] args) {
-        // Создание продуктов
-        Product laptop = new Product("Ноутбук", 75000);
-        Product phone = new Product("Смартфон", 35000);
-        Product headphones = new Product("Наушники", 5000);
-        Product tablet = new Product("Планшет", 25000);
-        Product mouse = new Product("Мышь", 1500);
-        Product keyboard = new Product("Клавиатура", 3000); // Дополнительный продукт для демонстрации заполненной корзины
+        System.out.println("Демонстрация работы интернет-магазина с наследованием\n");
+
+        // Создание товаров разных типов
+        SimpleProduct laptop = new SimpleProduct("Ноутбук", 75000);
+        SimpleProduct phone = new SimpleProduct("Смартфон", 35000);
+        DiscountedProduct headphones = new DiscountedProduct("Наушники", 5000, 20); // 20% скидка
+        DiscountedProduct tablet = new DiscountedProduct("Планшет", 25000, 15); // 15% скидка
+        FixPriceProduct usbCable = new FixPriceProduct("USB-кабель");
+        FixPriceProduct mouse = new FixPriceProduct("Компьютерная мышь");
 
         // Создание корзины
         ProductBasket basket = new ProductBasket();
 
-        System.out.println("Демонстрация работы корзины\n");
-
-        // 1. Добавление продукта в корзину
-        System.out.println("1. Добавление продукта в корзину:");
+        // Добавление товаров в корзину
+        System.out.println("1. Добавление товаров разных типов в корзину:");
         basket.addProduct(laptop);
         basket.addProduct(phone);
-        System.out.println("Добавлены ноутбук и смартфон\n");
-
-        // 2. Добавление продукта в заполненную корзину
-        System.out.println("2. Попытка добавления в заполненную корзину:");
         basket.addProduct(headphones);
         basket.addProduct(tablet);
+        basket.addProduct(usbCable);
+        System.out.println("Добавлено 5 товаров\n");
+
+        // Попытка добавить шестой товар (корзина заполнена)
+        System.out.println("2. Попытка добавить товар в заполненную корзину:");
         basket.addProduct(mouse);
-        // Попытка добавить шестой продукт (корзина рассчитана на 5)
-        basket.addProduct(keyboard);
         System.out.println();
 
-        // 3. Печать содержимого корзины с несколькими товарами
-        System.out.println("3. Печать содержимого корзины:");
+        // Печать содержимого корзины
+        System.out.println("3. Печать содержимого корзины (новый формат):");
         basket.printBasket();
         System.out.println();
 
-        // 4. Получение стоимости корзины с несколькими товарами
+        // Получение стоимости корзины
         System.out.println("4. Получение стоимости корзины:");
         System.out.println("Общая стоимость: " + basket.getTotalPrice() + " руб.\n");
 
-        // 5. Поиск товара, который есть в корзине
-        System.out.println("5. Поиск товара, который есть в корзине:");
-        String searchProduct = "Ноутбук";
-        boolean found = basket.containsProduct(searchProduct);
-        System.out.println("Товар '" + searchProduct + "' в корзине: " + found + "\n");
+        // Поиск товаров
+        System.out.println("5. Поиск товаров в корзине:");
+        System.out.println("Товар 'Ноутбук' в корзине: " + basket.containsProduct("Ноутбук"));
+        System.out.println("Товар 'Клавиатура' в корзине: " + basket.containsProduct("Клавиатура"));
+        System.out.println();
 
-        // 6. Поиск товара, которого нет в корзине
-        System.out.println("6. Поиск товара, которого нет в корзине:");
-        searchProduct = "Клавиатура";
-        found = basket.containsProduct(searchProduct);
-        System.out.println("Товар '" + searchProduct + "' в корзине: " + found + "\n");
+        // Получение количества специальных товаров
+        System.out.println("6. Количество специальных товаров в корзине:");
+        System.out.println("Специальных товаров: " + basket.getSpecialProductsCount() + "\n");
 
-        // 7. Очистка корзины
+        // Очистка корзины
         System.out.println("7. Очистка корзины:");
         basket.clearBasket();
         System.out.println("Корзина очищена\n");
 
-        // 8. Печать содержимого пустой корзины
+        // Печать пустой корзины
         System.out.println("8. Печать содержимого пустой корзины:");
         basket.printBasket();
         System.out.println();
 
-        // 9. Получение стоимости пустой корзины
-        System.out.println("9. Получение стоимости пустой корзины:");
-        System.out.println("Общая стоимость: " + basket.getTotalPrice() + " руб.\n");
+        // Демонстрация скидок
+        System.out.println("9. Демонстрация работы скидок и фиксированных цен:");
+        ProductBasket basket2 = new ProductBasket();
 
-        // 10. Поиск товара по имени в пустой корзине
-        System.out.println("10. Поиск товара по имени в пустой корзине:");
-        searchProduct = "Ноутбук";
-        found = basket.containsProduct(searchProduct);
-        System.out.println("Товар '" + searchProduct + "' в корзине: " + found);
+        DiscountedProduct tv = new DiscountedProduct("Телевизор", 50000, 30);
+        FixPriceProduct charger = new FixPriceProduct("Зарядное устройство");
+        SimpleProduct book = new SimpleProduct("Книга", 500);
+
+        basket2.addProduct(tv);
+        basket2.addProduct(charger);
+        basket2.addProduct(book);
+
+        System.out.println("Создана новая корзина с товарами:");
+        basket2.printBasket();
+
+        // Проверка цен
+        System.out.println("\n10. Проверка цен товаров:");
+        System.out.println("Телевизор со скидкой 30%: базовая цена " + tv.getBasePrice() +
+                ", цена со скидкой " + tv.getPrice());
+        System.out.println("Фиксированная цена товара: " + charger.getPrice());
+        System.out.println("Обычная цена книги: " + book.getPrice());
     }
 }

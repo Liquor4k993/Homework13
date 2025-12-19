@@ -1,21 +1,18 @@
 package me.liquor4k.org.skypro.skyshop.product;
 
 /**
- * Класс, представляющий товар в интернет-магазине.
- * Значения товара неизменяемы после создания.
+ * Абстрактный класс, представляющий товар в интернет-магазине.
+ * Является корнем иерархии для всех типов товаров.
  */
-public class Product {
+public abstract class Product {
     private final String name;
-    private final int price;
 
     /**
      * Конструктор товара
      * @param name название товара
-     * @param price цена товара в рублях
      */
-    public Product(String name, int price) {
+    public Product(String name) {
         this.name = name;
-        this.price = price;
     }
 
     /**
@@ -30,7 +27,18 @@ public class Product {
      * Получить цену товара
      * @return цена товара
      */
-    public int getPrice() {
-        return price;
-    }
+    public abstract int getPrice();
+
+    /**
+     * Проверяет, является ли товар специальным
+     * @return true если товар специальный, false если обычный
+     */
+    public abstract boolean isSpecial();
+
+    /**
+     * Возвращает строковое представление товара
+     * @return строка с описанием товара
+     */
+    @Override
+    public abstract String toString();
 }

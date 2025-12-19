@@ -46,6 +46,20 @@ public class ProductBasket {
     }
 
     /**
+     * Подсчитывает количество специальных товаров в корзине.
+     * @return количество специальных товаров
+     */
+    public int getSpecialProductsCount() {
+        int specialCount = 0;
+        for (int i = 0; i < count; i++) {
+            if (products[i].isSpecial()) {
+                specialCount++;
+            }
+        }
+        return specialCount;
+    }
+
+    /**
      * Выводит содержимое корзины в консоль.
      * Если корзина пуста, выводит сообщение "в корзине пусто".
      */
@@ -56,10 +70,10 @@ public class ProductBasket {
         }
 
         for (int i = 0; i < count; i++) {
-            Product product = products[i];
-            System.out.println(product.getName() + ": " + product.getPrice());
+            System.out.println(products[i].toString());
         }
         System.out.println("Итого: " + getTotalPrice());
+        System.out.println("Специальных товаров: " + getSpecialProductsCount());
     }
 
     /**

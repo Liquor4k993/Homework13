@@ -1,89 +1,131 @@
 package me.liquor4k.org.skypro.skyshop;
 
-import me.liquor4k.org.skypro.skyshop.product.DiscountedProduct;
-import me.liquor4k.org.skypro.skyshop.product.FixPriceProduct;
-import me.liquor4k.org.skypro.skyshop.product.Product;
+import me.liquor4k.org.skypro.skyshop.product.*;
 import me.liquor4k.org.skypro.skyshop.basket.ProductBasket;
-import me.liquor4k.org.skypro.skyshop.product.SimpleProduct;
+import me.liquor4k.org.skypro.skyshop.content.Article;
+import me.liquor4k.org.skypro.skyshop.search.SearchEngine;
+import me.liquor4k.org.skypro.skyshop.search.Searchable;
+import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Демонстрация работы интернет-магазина с наследованием\n");
+        System.out.println("=== Демонстрация работы интернет-магазина с поиском ===\n");
 
         // Создание товаров разных типов
-        SimpleProduct laptop = new SimpleProduct("Ноутбук", 75000);
-        SimpleProduct phone = new SimpleProduct("Смартфон", 35000);
-        DiscountedProduct headphones = new DiscountedProduct("Наушники", 5000, 20); // 20% скидка
-        DiscountedProduct tablet = new DiscountedProduct("Планшет", 25000, 15); // 15% скидка
-        FixPriceProduct usbCable = new FixPriceProduct("USB-кабель");
-        FixPriceProduct mouse = new FixPriceProduct("Компьютерная мышь");
+        SimpleProduct laptop = new SimpleProduct("Ноутбук Lenovo", 75000);
+        SimpleProduct phone = new SimpleProduct("Смартфон Samsung", 35000);
+        DiscountedProduct headphones = new DiscountedProduct("Беспроводные наушники Sony", 5000, 20);
+        DiscountedProduct tablet = new DiscountedProduct("Планшет Apple iPad", 25000, 15);
+        FixPriceProduct usbCable = new FixPriceProduct("USB-C кабель");
+        FixPriceProduct mouse = new FixPriceProduct("Игровая мышь");
 
-        // Создание корзины
+        // Создание статей
+        Article laptopArticle = new Article(
+                "Обзор ноутбука Lenovo",
+                "Новый ноутбук Lenovo обладает мощным процессором и длительным временем работы от батареи."
+        );
+
+        Article headphonesArticle = new Article(
+                "Тест беспроводных наушников",
+                "Наушники Sony показали отличное качество звука и удобную посадку."
+        );
+
+        Article shoppingGuide = new Article(
+                "Как выбрать электронику",
+                "При выборе электроники обращайте внимание на характеристики, бренд и отзывы."
+        );
+
+        // Создание и настройка поискового движка
+        SearchEngine searchEngine = new SearchEngine(10);
+
+        // Добавление товаров в поисковый движок
+        searchEngine.add(laptop);
+        searchEngine.add(phone);
+        searchEngine.add(headphones);
+        searchEngine.add(tablet);
+        searchEngine.add(usbCable);
+        searchEngine.add(mouse);
+
+        // Добавление статей в поисковый движок
+        searchEngine.add(laptopArticle);
+        searchEngine.add(headphonesArticle);
+        searchEngine.add(shoppingGuide);
+
+        System.out.println("1. Объектов в поисковом движке: " + searchEngine.getCount() + "\n");
+
+        // Демонстрация поиска
+        System.out.println("2. Поиск по запросу 'ноутбук':");
+        Searchable[] results = searchEngine.search("ноутбук");
+        printSearchResults(results);
+
+        System.out.println("\n3. Поиск по запросу 'Sony':");
+        results = searchEngine.search("Sony");
+        printSearchResults(results);
+
+        System.out.println("\n4. Поиск по запросу 'игровая':");
+        results = searchEngine.search("игровая");
+        printSearchResults(results);
+
+        System.out.println("\n5. Поиск по запросу 'электроника':");
+        results = searchEngine.search("электроника");
+        printSearchResults(results);
+
+        System.out.println("\n6. Поиск по запросу 'кабель':");
+        results = searchEngine.search("кабель");
+        printSearchResults(results);
+
+        System.out.println("\n7. Поиск по запросу 'xyz' (нет результатов):");
+        results = searchEngine.search("xyz");
+        printSearchResults(results);
+
+        // Демонстрация getStringRepresentation
+        System.out.println("\n8. Демонстрация getStringRepresentation():");
+        System.out.println(laptop.getStringRepresentation());
+        System.out.println(laptopArticle.getStringRepresentation());
+
+        // Демонстрация работы корзины (из предыдущих заданий)
+        System.out.println("\n9. Демонстрация работы корзины:");
         ProductBasket basket = new ProductBasket();
-
-        // Добавление товаров в корзину
-        System.out.println("1. Добавление товаров разных типов в корзину:");
         basket.addProduct(laptop);
-        basket.addProduct(phone);
         basket.addProduct(headphones);
-        basket.addProduct(tablet);
         basket.addProduct(usbCable);
-        System.out.println("Добавлено 5 товаров\n");
-
-        // Попытка добавить шестой товар (корзина заполнена)
-        System.out.println("2. Попытка добавить товар в заполненную корзину:");
-        basket.addProduct(mouse);
-        System.out.println();
-
-        // Печать содержимого корзины
-        System.out.println("3. Печать содержимого корзины (новый формат):");
         basket.printBasket();
-        System.out.println();
+    }
 
-        // Получение стоимости корзины
-        System.out.println("4. Получение стоимости корзины:");
-        System.out.println("Общая стоимость: " + basket.getTotalPrice() + " руб.\n");
+    /**
+     * Выводит результаты поиска в консоль
+     * @param results массив найденных объектов
+     */
+    private static void printSearchResults(Searchable[] results) {
+        System.out.println("Найдено объектов: " + countNonNull(results));
 
-        // Поиск товаров
-        System.out.println("5. Поиск товаров в корзине:");
-        System.out.println("Товар 'Ноутбук' в корзине: " + basket.containsProduct("Ноутбук"));
-        System.out.println("Товар 'Клавиатура' в корзине: " + basket.containsProduct("Клавиатура"));
-        System.out.println();
+        if (countNonNull(results) == 0) {
+            System.out.println("Результатов не найдено.");
+            return;
+        }
 
-        // Получение количества специальных товаров
-        System.out.println("6. Количество специальных товаров в корзине:");
-        System.out.println("Специальных товаров: " + basket.getSpecialProductsCount() + "\n");
+        for (Searchable result : results) {
+            if (result != null) {
+                System.out.println("  • " + result.getStringRepresentation());
+            }
+        }
 
-        // Очистка корзины
-        System.out.println("7. Очистка корзины:");
-        basket.clearBasket();
-        System.out.println("Корзина очищена\n");
+        // Альтернативный вывод через Arrays.toString (для отладки)
+        // System.out.println("Массив результатов: " + Arrays.toString(results));
+    }
 
-        // Печать пустой корзины
-        System.out.println("8. Печать содержимого пустой корзины:");
-        basket.printBasket();
-        System.out.println();
-
-        // Демонстрация скидок
-        System.out.println("9. Демонстрация работы скидок и фиксированных цен:");
-        ProductBasket basket2 = new ProductBasket();
-
-        DiscountedProduct tv = new DiscountedProduct("Телевизор", 50000, 30);
-        FixPriceProduct charger = new FixPriceProduct("Зарядное устройство");
-        SimpleProduct book = new SimpleProduct("Книга", 500);
-
-        basket2.addProduct(tv);
-        basket2.addProduct(charger);
-        basket2.addProduct(book);
-
-        System.out.println("Создана новая корзина с товарами:");
-        basket2.printBasket();
-
-        // Проверка цен
-        System.out.println("\n10. Проверка цен товаров:");
-        System.out.println("Телевизор со скидкой 30%: базовая цена " + tv.getBasePrice() +
-                ", цена со скидкой " + tv.getPrice());
-        System.out.println("Фиксированная цена товара: " + charger.getPrice());
-        System.out.println("Обычная цена книги: " + book.getPrice());
+    /**
+     * Подсчитывает ненулевые элементы в массиве
+     * @param array массив для проверки
+     * @return количество ненулевых элементов
+     */
+    private static int countNonNull(Searchable[] array) {
+        int count = 0;
+        for (Searchable item : array) {
+            if (item != null) {
+                count++;
+            }
+        }
+        return count;
     }
 }

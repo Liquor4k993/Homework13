@@ -1,10 +1,13 @@
 package me.liquor4k.org.skypro.skyshop.product;
 
+import me.liquor4k.org.skypro.skyshop.search.Searchable;
+
 /**
  * Абстрактный класс, представляющий товар в интернет-магазине.
  * Является корнем иерархии для всех типов товаров.
+ * Реализует интерфейс Searchable для поддержки поиска.
  */
-public abstract class Product {
+public abstract class Product implements Searchable {
     private final String name;
 
     /**
@@ -41,4 +44,33 @@ public abstract class Product {
      */
     @Override
     public abstract String toString();
+
+    // Реализация методов интерфейса Searchable
+
+    /**
+     * Возвращает термин для поиска (имя товара)
+     * @return имя товара
+     */
+    @Override
+    public String getSearchTerm() {
+        return name;
+    }
+
+    /**
+     * Возвращает тип контента
+     * @return "PRODUCT"
+     */
+    @Override
+    public String getContentType() {
+        return "PRODUCT";
+    }
+
+    /**
+     * Возвращает имя объекта для поиска
+     * @return название товара
+     */
+    @Override
+    public String getSearchableName() {
+        return name;
+    }
 }

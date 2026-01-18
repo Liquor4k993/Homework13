@@ -14,8 +14,19 @@ public class Article implements Searchable {
      * Конструктор статьи
      * @param title название статьи
      * @param text текст статьи
+     * @throws IllegalArgumentException если название null или пустое
      */
     public Article(String title, String text) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Название статьи не может быть пустым или состоять только из пробелов"
+            );
+        }
+
+        if (text == null) {
+            text = ""; // Разрешаем пустой текст
+        }
+
         this.title = title;
         this.text = text;
     }

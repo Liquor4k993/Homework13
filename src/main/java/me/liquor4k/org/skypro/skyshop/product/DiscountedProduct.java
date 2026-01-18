@@ -12,9 +12,23 @@ public class DiscountedProduct extends Product {
      * @param name название товара
      * @param basePrice базовая цена товара
      * @param discount скидка в процентах (0-100)
+     * @throws IllegalArgumentException если базовая цена <= 0 или скидка вне диапазона 0-100
      */
     public DiscountedProduct(String name, int basePrice, int discount) {
         super(name);
+
+        if (basePrice <= 0) {
+            throw new IllegalArgumentException(
+                    "Базовая цена товара должна быть строго больше 0. Получено: " + basePrice
+            );
+        }
+
+        if (discount < 0 || discount > 100) {
+            throw new IllegalArgumentException(
+                    "Скидка должна быть в диапазоне от 0 до 100 включительно. Получено: " + discount
+            );
+        }
+
         this.basePrice = basePrice;
         this.discount = discount;
     }

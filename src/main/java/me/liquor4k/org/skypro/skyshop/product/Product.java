@@ -13,8 +13,14 @@ public abstract class Product implements Searchable {
     /**
      * Конструктор товара
      * @param name название товара
+     * @throws IllegalArgumentException если название null или пустое
      */
     public Product(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Название продукта не может быть пустым или состоять только из пробелов"
+            );
+        }
         this.name = name;
     }
 

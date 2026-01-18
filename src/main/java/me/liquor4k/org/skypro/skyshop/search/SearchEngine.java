@@ -59,6 +59,67 @@ public class SearchEngine {
     }
 
     /**
+     * Находит наиболее подходящий объект для поискового запроса
+     * @param searchQuery поисковый запрос
+     * @return наиболее подходящий объект Searchable
+     * @throws BestResultNotFound если объект не найден
+     */
+    public Searchable findBestMatch(String searchQuery) throws BestResultNotFound {
+        Searchable bestMatch = null;
+        int maxOccurrences = 0;
+
+        for (int i = 0; i < count; i++) {
+            Searchable current = searchables[i];
+            if (current == null) {
+                continue; // Пропускаем null-элементы
+            }
+
+            int occurrences = countOccurrences(current.getSearchTerm(), searchQuery);
+
+            if (occurrences > maxOccurrences) {
+                maxOccurrences = occurrences;
+                bestMatch = current;
+            }
+        }
+
+        if (bestMatch == null) {
+            throw new BestResultNotFound(searchQuery);
+        }
+
+        return bestMatch;
+    }
+
+    /**
+     * Подсчитывает количество вхождений подстроки в строку
+     * @param text строка для поиска
+     * @param substring подстрока для подсчета
+     * @return количество вхождений
+     */
+    private int countOccurrences(String text, String substring) {
+        if (substring == null || substring.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        int index = 0;
+        String lowerText = text.toLowerCase();
+        String lowerSubstring = substring.toLowerCase();
+
+        while (index < lowerText.length()) {
+            int foundIndex = lowerText.indexOf(lowerSubstring, index);
+
+            if (foundIndex == -1) {
+                break; // Больше вхождений нет
+            }
+
+            count++;
+            index = foundIndex + lowerSubstring.length();
+        }
+
+        return count;
+    }
+
+    /**
      * Возвращает количество добавленных объектов
      * @return количество объектов
      */

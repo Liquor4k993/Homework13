@@ -10,9 +10,15 @@ public class SimpleProduct extends Product {
      * Конструктор обычного товара
      * @param name название товара
      * @param price цена товара в рублях
+     * @throws IllegalArgumentException если цена <= 0
      */
     public SimpleProduct(String name, int price) {
         super(name);
+        if (price <= 0) {
+            throw new IllegalArgumentException(
+                    "Цена товара должна быть строго больше 0. Получено: " + price
+            );
+        }
         this.price = price;
     }
 

@@ -1,7 +1,6 @@
 package me.liquor4k.org.skypro.skyshop.search;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Класс поискового движка для поиска по товарам и статьям.
@@ -28,10 +27,10 @@ public class SearchEngine {
     /**
      * Выполняет поиск по всем объектам
      * @param query строка для поиска
-     * @return список всех найденных объектов
+     * @return TreeMap с найденными объектами, отсортированными по имени
      */
-    public List<Searchable> search(String query) {
-        List<Searchable> results = new LinkedList<>();
+    public TreeMap<String, Searchable> search(String query) {
+        TreeMap<String, Searchable> results = new TreeMap<>();
 
         for (Searchable current : searchables) {
             if (current == null) {
@@ -40,9 +39,34 @@ public class SearchEngine {
 
             // Ищем вхождение запроса в searchTerm объекта
             if (current.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
+                // Используем имя как ключ, TreeMap автоматически сортирует по ключам
+                results.put(current.getSearchableName(), current);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Выполняет поиск по всем объектам и возвращает список
+     * @param query строка для поиска
+     * @return список всех найденных объектов (для обратной совместимости)
+     */
+    public List<Searchable> searchAsList(String query) {
+        List<Searchable> results = new ArrayList<>();
+
+        for (Searchable current : searchables) {
+            if (current == null) {
+                continue; // Пропускаем null-элементы
+            }
+
+            if (current.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
                 results.add(current);
             }
         }
+
+        // Сортируем результаты по имени
+        results.sort(Comparator.comparing(Searchable::getSearchableName));
 
         return results;
     }

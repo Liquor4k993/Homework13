@@ -1,19 +1,20 @@
 package me.liquor4k.org.skypro.skyshop.search;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Класс поискового движка для поиска по товарам и статьям.
+ * Использует LinkedList для хранения объектов.
  */
 public class SearchEngine {
-    private final Searchable[] searchables;
-    private int count;
+    private final LinkedList<Searchable> searchables;
 
     /**
      * Конструктор поискового движка
-     * @param capacity максимальное количество элементов для поиска
      */
-    public SearchEngine(int capacity) {
-        this.searchables = new Searchable[capacity];
-        this.count = 0;
+    public SearchEngine() {
+        this.searchables = new LinkedList<>();
     }
 
     /**
@@ -21,37 +22,25 @@ public class SearchEngine {
      * @param searchable объект, реализующий интерфейс Searchable
      */
     public void add(Searchable searchable) {
-        if (count < searchables.length) {
-            searchables[count] = searchable;
-            count++;
-        } else {
-            System.out.println("Невозможно добавить объект для поиска. Достигнут лимит.");
-        }
+        searchables.add(searchable);
     }
 
     /**
      * Выполняет поиск по всем объектам
      * @param query строка для поиска
-     * @return массив до 5 найденных объектов
+     * @return список всех найденных объектов
      */
-    public Searchable[] search(String query) {
-        Searchable[] results = new Searchable[5];
-        int resultIndex = 0;
+    public List<Searchable> search(String query) {
+        List<Searchable> results = new LinkedList<>();
 
-        for (int i = 0; i < count; i++) {
-            if (resultIndex >= 5) {
-                break; // Максимум 5 результатов
-            }
-
-            Searchable current = searchables[i];
+        for (Searchable current : searchables) {
             if (current == null) {
                 continue; // Пропускаем null-элементы
             }
 
             // Ищем вхождение запроса в searchTerm объекта
             if (current.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results[resultIndex] = current;
-                resultIndex++;
+                results.add(current);
             }
         }
 
@@ -68,8 +57,7 @@ public class SearchEngine {
         Searchable bestMatch = null;
         int maxOccurrences = 0;
 
-        for (int i = 0; i < count; i++) {
-            Searchable current = searchables[i];
+        for (Searchable current : searchables) {
             if (current == null) {
                 continue; // Пропускаем null-элементы
             }
@@ -124,6 +112,23 @@ public class SearchEngine {
      * @return количество объектов
      */
     public int getCount() {
-        return count;
+        return searchables.size();
+    }
+
+    /**
+     * Удаляет объект из поискового движка
+     * @param searchable объект для удаления
+     * @return true если объект был удален
+     */
+    public boolean remove(Searchable searchable) {
+        return searchables.remove(searchable);
+    }
+
+    /**
+     * Возвращает список всех объектов в движке (для тестирования)
+     * @return список объектов
+     */
+    public List<Searchable> getAllSearchables() {
+        return new LinkedList<>(searchables);
     }
 }

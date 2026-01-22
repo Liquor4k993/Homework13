@@ -1,36 +1,51 @@
 package me.liquor4k.org.skypro.skyshop.basket;
 
 import me.liquor4k.org.skypro.skyshop.product.Product;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Iterator;
 
 /**
  * Класс, представляющий корзину для товаров.
- * Корзина может содержать до 5 товаров.
+ * Использует LinkedList для хранения товаров.
  */
 public class ProductBasket {
-    private final Product[] products;
-    private int count;
+    private final LinkedList<Product> products;
 
     /**
      * Конструктор корзины.
-     * Создает пустую корзину с максимальной вместимостью 5 товаров.
+     * Создает пустую корзину.
      */
     public ProductBasket() {
-        this.products = new Product[5];
-        this.count = 0;
+        this.products = new LinkedList<>();
     }
 
     /**
      * Добавляет продукт в корзину.
-     * Если в корзине нет свободного места, выводит сообщение об ошибке.
      * @param product продукт для добавления
      */
     public void addProduct(Product product) {
-        if (count < products.length) {
-            products[count] = product;
-            count++;
-        } else {
-            System.out.println("Невозможно добавить продукт. Корзина заполнена.");
+        products.add(product);
+    }
+
+    /**
+     * Удаляет все продукты с указанным именем из корзины.
+     * @param name имя продукта для удаления
+     * @return список удаленных продуктов
+     */
+    public List<Product> removeProductByName(String name) {
+        List<Product> removedProducts = new LinkedList<>();
+        Iterator<Product> iterator = products.iterator();
+
+        while (iterator.hasNext()) {
+            Product product = iterator.next();
+            if (product.getName().equals(name)) {
+                removedProducts.add(product);
+                iterator.remove();
+            }
         }
+
+        return removedProducts;
     }
 
     /**
@@ -39,8 +54,8 @@ public class ProductBasket {
      */
     public int getTotalPrice() {
         int total = 0;
-        for (int i = 0; i < count; i++) {
-            total += products[i].getPrice();
+        for (Product product : products) {
+            total += product.getPrice();
         }
         return total;
     }
@@ -51,8 +66,8 @@ public class ProductBasket {
      */
     public int getSpecialProductsCount() {
         int specialCount = 0;
-        for (int i = 0; i < count; i++) {
-            if (products[i].isSpecial()) {
+        for (Product product : products) {
+            if (product.isSpecial()) {
                 specialCount++;
             }
         }
@@ -64,13 +79,13 @@ public class ProductBasket {
      * Если корзина пуста, выводит сообщение "в корзине пусто".
      */
     public void printBasket() {
-        if (count == 0) {
+        if (products.isEmpty()) {
             System.out.println("в корзине пусто");
             return;
         }
 
-        for (int i = 0; i < count; i++) {
-            System.out.println(products[i].toString());
+        for (Product product : products) {
+            System.out.println(product.toString());
         }
         System.out.println("Итого: " + getTotalPrice());
         System.out.println("Специальных товаров: " + getSpecialProductsCount());
@@ -82,8 +97,8 @@ public class ProductBasket {
      * @return true если товар найден, false в противном случае
      */
     public boolean containsProduct(String productName) {
-        for (int i = 0; i < count; i++) {
-            if (products[i].getName().equals(productName)) {
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
                 return true;
             }
         }
@@ -94,9 +109,22 @@ public class ProductBasket {
      * Очищает корзину, удаляя все товары.
      */
     public void clearBasket() {
-        for (int i = 0; i < count; i++) {
-            products[i] = null;
-        }
-        count = 0;
+        products.clear();
+    }
+
+    /**
+     * Возвращает количество товаров в корзине.
+     * @return количество товаров
+     */
+    public int getProductCount() {
+        return products.size();
+    }
+
+    /**
+     * Возвращает список всех товаров в корзине (для тестирования).
+     * @return список товаров
+     */
+    public List<Product> getProducts() {
+        return new LinkedList<>(products);
     }
 }

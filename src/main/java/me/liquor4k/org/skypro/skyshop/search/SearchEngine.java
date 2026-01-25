@@ -4,69 +4,60 @@ import java.util.*;
 
 /**
  * Класс поискового движка для поиска по товарам и статьям.
- * Использует LinkedList для хранения объектов.
+ * Использует HashSet для хранения уникальных объектов.
  */
 public class SearchEngine {
-    private final LinkedList<Searchable> searchables;
+    private final HashSet<Searchable> searchables;
 
     /**
      * Конструктор поискового движка
      */
     public SearchEngine() {
-        this.searchables = new LinkedList<>();
+        this.searchables = new HashSet<>();
     }
 
     /**
      * Добавляет объект для поиска в движок
      * @param searchable объект, реализующий интерфейс Searchable
+     * @return true если объект был добавлен (не был дубликатом)
      */
-    public void add(Searchable searchable) {
-        searchables.add(searchable);
+    public boolean add(Searchable searchable) {
+        return searchables.add(searchable);
     }
 
     /**
      * Выполняет поиск по всем объектам
      * @param query строка для поиска
-     * @return TreeMap с найденными объектами, отсортированными по имени
+     * @return TreeSet с найденными объектами, отсортированными по длине имени (от большего к меньшему),
+     *         а при равной длине - в натуральном порядке
      */
-    public TreeMap<String, Searchable> search(String query) {
-        TreeMap<String, Searchable> results = new TreeMap<>();
+    public TreeSet<Searchable> search(String query) {
+        // Создаем TreeSet с кастомным компаратором
+        TreeSet<Searchable> results = new TreeSet<>((s1, s2) -> {
+            // Сравниваем по длине имени (от большего к меньшему)
+            int lengthComparison = Integer.compare(
+                    s2.getSearchableName().length(),
+                    s1.getSearchableName().length()
+            );
+
+            if (lengthComparison != 0) {
+                return lengthComparison;
+            }
+
+            // Если длина одинаковая, сравниваем по имени в натуральном порядке
+            return s1.getSearchableName().compareTo(s2.getSearchableName());
+        });
 
         for (Searchable current : searchables) {
             if (current == null) {
-                continue; // Пропускаем null-элементы
+                continue; // Пропускаем null-элементы (хотя в Set их быть не должно)
             }
 
             // Ищем вхождение запроса в searchTerm объекта
             if (current.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                // Используем имя как ключ, TreeMap автоматически сортирует по ключам
-                results.put(current.getSearchableName(), current);
-            }
-        }
-
-        return results;
-    }
-
-    /**
-     * Выполняет поиск по всем объектам и возвращает список
-     * @param query строка для поиска
-     * @return список всех найденных объектов (для обратной совместимости)
-     */
-    public List<Searchable> searchAsList(String query) {
-        List<Searchable> results = new ArrayList<>();
-
-        for (Searchable current : searchables) {
-            if (current == null) {
-                continue; // Пропускаем null-элементы
-            }
-
-            if (current.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
                 results.add(current);
             }
         }
-
-        // Сортируем результаты по имени
-        results.sort(Comparator.comparing(Searchable::getSearchableName));
 
         return results;
     }
@@ -83,7 +74,7 @@ public class SearchEngine {
 
         for (Searchable current : searchables) {
             if (current == null) {
-                continue; // Пропускаем null-элементы
+                continue;
             }
 
             int occurrences = countOccurrences(current.getSearchTerm(), searchQuery);
@@ -149,10 +140,10 @@ public class SearchEngine {
     }
 
     /**
-     * Возвращает список всех объектов в движке (для тестирования)
-     * @return список объектов
+     * Возвращает множество всех объектов в движке (для тестирования)
+     * @return множество объектов
      */
-    public List<Searchable> getAllSearchables() {
-        return new LinkedList<>(searchables);
+    public Set<Searchable> getAllSearchables() {
+        return new HashSet<>(searchables);
     }
 }

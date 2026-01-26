@@ -1,6 +1,7 @@
 package me.liquor4k.org.skypro.skyshop.product;
 
 import me.liquor4k.org.skypro.skyshop.search.Searchable;
+import java.util.Objects;
 
 /**
  * Абстрактный класс, представляющий товар в интернет-магазине.
@@ -78,5 +79,30 @@ public abstract class Product implements Searchable {
     @Override
     public String getSearchableName() {
         return name;
+    }
+
+    // Реализация equals и hashCode
+
+    /**
+     * Сравнивает продукты по имени
+     * @param o объект для сравнения
+     * @return true если имена продуктов равны
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Product product = (Product) o;
+        return Objects.equals(name, product.name);
+    }
+
+    /**
+     * Возвращает хэш-код продукта на основе имени
+     * @return хэш-код
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

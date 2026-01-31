@@ -2,6 +2,7 @@ package me.liquor4k.org.skypro.skyshop.basket;
 
 import me.liquor4k.org.skypro.skyshop.product.Product;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Класс, представляющий корзину для товаров.
@@ -53,16 +54,10 @@ public class ProductBasket {
      * @return общая стоимость корзины
      */
     public int getTotalPrice() {
-        int total = 0;
-
-        // Перебираем все списки продуктов
-        for (List<Product> productList : productsMap.values()) {
-            for (Product product : productList) {
-                total += product.getPrice();
-            }
-        }
-
-        return total;
+        return productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     /**
@@ -70,18 +65,18 @@ public class ProductBasket {
      * @return количество специальных товаров
      */
     public int getSpecialProductsCount() {
-        int specialCount = 0;
+        return (int) getSpecialCount();
+    }
 
-        // Перебираем все списки продуктов
-        for (List<Product> productList : productsMap.values()) {
-            for (Product product : productList) {
-                if (product.isSpecial()) {
-                    specialCount++;
-                }
-            }
-        }
-
-        return specialCount;
+    /**
+     * Приватный метод для подсчета специальных товаров с использованием Stream API
+     * @return количество специальных товаров
+     */
+    private long getSpecialCount() {
+        return productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
     /**
@@ -94,12 +89,10 @@ public class ProductBasket {
             return;
         }
 
-        // Перебираем все списки продуктов
-        for (List<Product> productList : productsMap.values()) {
-            for (Product product : productList) {
-                System.out.println(product.toString());
-            }
-        }
+        // Используем Stream API для вывода всех товаров
+        productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(product -> System.out.println(product.toString()));
 
         System.out.println("Итого: " + getTotalPrice());
         System.out.println("Специальных товаров: " + getSpecialProductsCount());
@@ -160,12 +153,8 @@ public class ProductBasket {
      * @return список всех товаров
      */
     public List<Product> getAllProducts() {
-        List<Product> allProducts = new ArrayList<>();
-
-        for (List<Product> productList : productsMap.values()) {
-            allProducts.addAll(productList);
-        }
-
-        return allProducts;
+        return productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 }

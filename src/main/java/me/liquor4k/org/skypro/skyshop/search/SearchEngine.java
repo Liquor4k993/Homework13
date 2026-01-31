@@ -1,6 +1,7 @@
 package me.liquor4k.org.skypro.skyshop.search;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Класс поискового движка для поиска по товарам и статьям.
@@ -32,34 +33,12 @@ public class SearchEngine {
      *         а при равной длине - в натуральном порядке
      */
     public TreeSet<Searchable> search(String query) {
-        // Создаем TreeSet с кастомным компаратором
-        TreeSet<Searchable> results = new TreeSet<>((s1, s2) -> {
-            // Сравниваем по длине имени (от большего к меньшему)
-            int lengthComparison = Integer.compare(
-                    s2.getSearchableName().length(),
-                    s1.getSearchableName().length()
-            );
-
-            if (lengthComparison != 0) {
-                return lengthComparison;
-            }
-
-            // Если длина одинаковая, сравниваем по имени в натуральном порядке
-            return s1.getSearchableName().compareTo(s2.getSearchableName());
-        });
-
-        for (Searchable current : searchables) {
-            if (current == null) {
-                continue; // Пропускаем null-элементы (хотя в Set их быть не должно)
-            }
-
-            // Ищем вхождение запроса в searchTerm объекта
-            if (current.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results.add(current);
-            }
-        }
-
-        return results;
+        return searchables.stream()
+                .filter(Objects::nonNull)
+                .filter(item -> item.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toCollection(() ->
+                        new TreeSet<>(new SearchableComparator())
+                ));
     }
 
     /**
